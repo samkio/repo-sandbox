@@ -1,0 +1,23 @@
+{
+  "name": "repo-sandbox",
+  "version": "1.0.0",
+  "description": "Playground for testing repo, GitHub actions and AWS CI/CD features.",
+  "private": true,
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samkio/repo-sandbox.git"
+  },
+  "author": "samkio",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samkio/repo-sandbox/issues"
+  },
+  "homepage": "https://github.com/samkio/repo-sandbox#readme",
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
