@@ -14,13 +14,20 @@ const value: ExampleType = {
 };
 console.log(value);
 
+interface InfrastructureStackProps extends cdk.StackProps {
+  environmentName: string;
+}
+
 export class InfrastructureStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: InfrastructureStackProps) {
     super(scope, id, props);
 
     // TODO - Should the CDK assume this is pre-built?
     // TODO - requires esbuild to be added as a devDependency?
-    const frontendBuildOutput = path.join(__dirname, "../../frontend-react/build");
+    const frontendBuildOutput = path.join(
+      __dirname,
+      "../../frontend-react/build"
+    );
     const frontendReactAsset = new Asset(this, "frontendReactAsset", {
       path: frontendBuildOutput,
       bundling: {
@@ -34,7 +41,9 @@ export class InfrastructureStack extends cdk.Stack {
       },
     });
 
-    const app = new App(this, "amplifyApp", {});
+    const app = new App(this, "amplifyApp", {
+      appName: `TestReactApp-${props.environmentName}`,
+    });
     app.addBranch("deploy", {
       asset: frontendReactAsset,
       pullRequestPreview: false,
