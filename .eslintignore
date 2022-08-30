@@ -132,4 +132,8 @@ dist
 # R outputs
 *.nb.html
 
+# Built assets
 build/
+
+# CDK
+cdk.out/

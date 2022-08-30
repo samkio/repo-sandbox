@@ -21,3 +21,6 @@ jobs:
         run: npx lerna bootstrap
       - name: Run build
         run: npx lerna run build --include-dependencies --scope=frontend-react
+      - name: Synth Infrastructure
+        working-directory: packages/infrastructure
+        run: yarn run cdk synth
