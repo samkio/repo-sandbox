@@ -1,0 +1,12 @@
+name: "Prepare"
+description: "Setups up node and installs dependencies"
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: "yarn"
+    - name: Install dependencies
+      shell: bash
+      run: yarn install --frozen-lockfile --immutable

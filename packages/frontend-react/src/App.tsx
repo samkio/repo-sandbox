@@ -9,7 +9,11 @@ function App() {
     numberField: 123,
     stringField: "exampleValue",
   };
-  console.log(value);
+
+  console.log({
+    ...value,
+    environmentVariable: process.env.REACT_APP_ENVIRONMENT_VARIABLE,
+  });
 
   return (
     <div className="App">

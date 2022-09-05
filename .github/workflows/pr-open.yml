@@ -1,0 +1,44 @@
+name: "PR Open"
+
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  ENVIRONMENT_NAME: "Development"
+  GITHUB_PR_NUMBER: ${{ github.event.number }}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run prepare
+        uses: ./.github/actions/prepare
+      - name: Run build
+        run: npx lerna run build --include-dependencies --scope=frontend-react
+  deploy:
+    needs: [build]
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: Development
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run prepare
+        uses: ./.github/actions/prepare
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.DEV_DEPLOY_ROLE }}
+          role-session-name: RepoSandboxClientSession
+      - name: Run build
+        run: npx lerna run build --include-dependencies --scope=infrastructure
+      - name: Deploy Infrastructure
+        working-directory: packages/infrastructure
+        run: yarn run cdk deploy --require-approval never
