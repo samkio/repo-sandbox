@@ -41,4 +41,4 @@ jobs:
         run: npx lerna run build --include-dependencies --scope=infrastructure
       - name: Deploy Infrastructure
         working-directory: packages/infrastructure
-        run: yarn run cdk deploy --require-approval never
+        run: yarn run cdk deploy --require-approval never --outputs-file ./cdk-outputs.json
