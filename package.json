@@ -14,10 +14,5 @@
     "url": "https://github.com/samkio/repo-sandbox/issues"
   },
   "homepage": "https://github.com/samkio/repo-sandbox#readme",
-  "devDependencies": {
-    "lerna": "^4.0.0"
-  },
-  "workspaces": [
-    "packages/*"
-  ]
+  "devDependencies": {}
 }
