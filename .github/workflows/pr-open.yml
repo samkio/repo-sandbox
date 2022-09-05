@@ -18,7 +18,7 @@ jobs:
       - name: Run prepare
         uses: ./.github/actions/prepare
       - name: Run build
-        run: npx lerna run build --include-dependencies --scope=frontend-react
+        run: pnpm run -r --filter frontend-react... build
   deploy:
     needs: [build]
     name: Deploy
@@ -38,7 +38,7 @@ jobs:
           role-to-assume: ${{ secrets.DEV_DEPLOY_ROLE }}
           role-session-name: RepoSandboxClientSession
       - name: Run build
-        run: npx lerna run build --include-dependencies --scope=infrastructure
+        run: pnpm run -r --filter infrastructure... build
       - name: Deploy Infrastructure
         working-directory: packages/infrastructure
-        run: yarn run cdk deploy --require-approval never --outputs-file ./cdk-outputs.json
+        run: pnpm run cdk deploy --require-approval never --outputs-file ./cdk-outputs.json

@@ -32,20 +32,20 @@ export class InfrastructureStack extends cdk.Stack {
         local: {
           tryBundle: (outputDir: string) => {
             try {
-              execSync("yarn --version", { timeout: 60000 });
+              execSync("npm --version", { timeout: 60000 });
             } catch {
               return false;
             }
-            execSync("yarn install --frozen-lockfile --immutable", {
+            execSync("npm install -g pnpm", {
               timeout: 60000,
             });
-            execSync(
-              "npx lerna run build --include-dependencies --scope=frontend-react",
-              {
-                cwd: frontendPackagePath,
-                timeout: 120000,
-              }
-            );
+            execSync("pnpm install", {
+              timeout: 60000,
+            });
+            execSync("pnpm run -r --filter frontend-react... build", {
+              cwd: frontendPackagePath,
+              timeout: 120000,
+            });
             copySync(path.join(frontendPackagePath, "build"), outputDir);
             return true;
           },
@@ -55,8 +55,9 @@ export class InfrastructureStack extends cdk.Stack {
           "bash",
           "-c",
           [
-            "yarn install --frozen-lockfile --immutable",
-            "npx lerna run build --include-dependencies --scope=frontend-react",
+            "npm install -g pnpm",
+            "pnpm install",
+            "pnpm run -r --filter frontend-react... build",
             "cp -r /asset-input/packages/frontend-react/build/* /asset-output/",
           ].join(" && "),
         ],

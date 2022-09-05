@@ -17,7 +17,8 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "shared": "1.0.0"
+    "@types/testing-library__jest-dom": "^5.14.5",
+    "shared": "workspace:1.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
