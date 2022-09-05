@@ -6,6 +6,7 @@ import { ExampleType } from "shared";
 import { Asset } from "aws-cdk-lib/aws-s3-assets";
 import { DockerImage } from "aws-cdk-lib";
 import { copySync } from "fs-extra";
+import { execSync } from "child_process";
 
 // Very basic dependency to verify depenent local packages are built.
 const value: ExampleType = {
@@ -22,32 +23,59 @@ export class InfrastructureStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: InfrastructureStackProps) {
     super(scope, id, props);
 
-    // TODO - Should the CDK assume this is pre-built?
     // TODO - requires esbuild to be added as a devDependency?
-    const frontendBuildOutput = path.join(
-      __dirname,
-      "../../frontend-react/build"
-    );
+    // TODO this is quite complex and duplicates build commands; can we simplify this?
+    const frontendPackagePath = path.join(__dirname, "../../frontend-react");
     const frontendReactAsset = new Asset(this, "frontendReactAsset", {
-      path: frontendBuildOutput,
+      path: frontendPackagePath,
       bundling: {
         local: {
           tryBundle: (outputDir: string) => {
-            copySync(frontendBuildOutput, outputDir);
+            try {
+              execSync("yarn --version", { timeout: 60000 });
+            } catch {
+              return false;
+            }
+            execSync("yarn install --frozen-lockfile --immutable", {
+              timeout: 60000,
+            });
+            execSync(
+              "npx lerna run build --include-dependencies --scope=frontend-react",
+              {
+                cwd: frontendPackagePath,
+                timeout: 120000,
+              }
+            );
+            copySync(path.join(frontendPackagePath, "build"), outputDir);
             return true;
           },
         },
         image: DockerImage.fromRegistry("node:lts"),
+        command: [
+          "bash",
+          "-c",
+          [
+            "yarn install --frozen-lockfile --immutable",
+            "npx lerna run build --include-dependencies --scope=frontend-react",
+            "cp -r /asset-input/packages/frontend-react/build/* /asset-output/",
+          ].join(" && "),
+        ],
       },
     });
 
     const app = new App(this, "amplifyApp", {
       appName: `TestReactApp-${props.environmentName}`,
     });
-    app.addBranch("deploy", {
+    const branch = app.addBranch("deploy", {
       asset: frontendReactAsset,
       pullRequestPreview: false,
       autoBuild: false,
+    });
+
+    new cdk.CfnOutput(this, "reactAppURL", {
+      value: `https://${branch.branchName}.${app.defaultDomain}`,
+      description: "The URL of the react app",
+      exportName: "reactAppURL",
     });
   }
 }
