@@ -8,6 +8,7 @@ on:
 env:
   ENVIRONMENT_NAME: "Development"
   GITHUB_PR_NUMBER: ${{ github.event.number }}
+  CI: true
 
 jobs:
   build:
@@ -18,7 +19,7 @@ jobs:
       - name: Run prepare
         uses: ./.github/actions/prepare
       - name: Run build
-        run: pnpm run -r --filter frontend-react... build
+        run: pnpm run build
   deploy:
     needs: [build]
     name: Deploy
@@ -38,7 +39,7 @@ jobs:
           role-to-assume: ${{ secrets.DEV_DEPLOY_ROLE }}
           role-session-name: RepoSandboxClientSession
       - name: Run build
-        run: pnpm run -r --filter infrastructure... build
+        run: pnpm run build
       - name: Deploy Infrastructure
         working-directory: packages/infrastructure
         run: pnpm run cdk deploy --require-approval never --outputs-file ./cdk-outputs.json
