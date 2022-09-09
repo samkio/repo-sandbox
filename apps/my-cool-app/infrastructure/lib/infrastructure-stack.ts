@@ -75,7 +75,7 @@ export class InfrastructureStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, "reactAppURL", {
       value: `https://${branch.branchName}.${app.defaultDomain}`,
-      description: "The URL of the react app"
+      description: "The URL of the react app",
     });
   }
 }
