@@ -31,6 +31,8 @@ jobs:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.DEV_DEPLOY_ROLE }}
           role-session-name: RepoSandboxClientSession
+      - name: Run build
+        run: pnpm run -r --filter infrastructure... build
       - name: Destroy Infrastructure
         working-directory: packages/infrastructure
         run: pnpm run cdk destroy
