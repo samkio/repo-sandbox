@@ -35,4 +35,4 @@ jobs:
         run: pnpm run -r --filter infrastructure... build
       - name: Destroy Infrastructure
         working-directory: packages/infrastructure
-        run: pnpm run cdk destroy
+        run: pnpm run cdk destroy --require-approval never
