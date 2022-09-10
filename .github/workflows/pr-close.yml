@@ -1,9 +1,10 @@
-name: "PR Open"
+name: "PR Close"
 
 on:
   pull_request:
     branches:
       - main
+    types: [closed]
 
 env:
   ENVIRONMENT_NAME: "Development"
@@ -13,18 +14,8 @@ concurrency:
   group: pr-${{ github.ref }}
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run prepare
-        uses: ./.github/actions/prepare
-      - name: Run build
-        run: pnpm run -r --filter frontend-react... build
-  deploy:
-    needs: [build]
-    name: Deploy
+  destroy:
+    name: Destroy
     runs-on: ubuntu-latest
     environment: Development
     permissions:
@@ -40,8 +31,6 @@ jobs:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.DEV_DEPLOY_ROLE }}
           role-session-name: RepoSandboxClientSession
-      - name: Run build
-        run: pnpm run -r --filter infrastructure... build
-      - name: Deploy Infrastructure
+      - name: Destroy Infrastructure
         working-directory: packages/infrastructure
-        run: pnpm run cdk deploy --require-approval never --outputs-file ./cdk-outputs.json
+        run: pnpm run cdk destroy
