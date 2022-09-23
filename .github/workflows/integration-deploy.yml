@@ -1,0 +1,37 @@
+name: "Integration Deployment"
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  ENVIRONMENT_NAME: "Integration"
+  CI: true
+
+concurrency:
+  group: int-${{ github.ref }}
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: Integration
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run prepare
+        uses: ./.github/actions/prepare
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.DEV_DEPLOY_ROLE }}
+          role-session-name: RepoSandboxClientSession
+      - name: Run build
+        run: pnpm nx run-many --target=build
+      - name: Deploy Infrastructure
+        working-directory: apps/my-cool-app/infrastructure
+        run: pnpm run cdk deploy --require-approval never --outputs-file ./cdk-outputs.json
