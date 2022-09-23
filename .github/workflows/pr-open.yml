@@ -11,7 +11,7 @@ env:
   CI: true
 
 concurrency:
-  group: pr-${{ github.ref }}
+  group: pr-${{ github.event.number }}
 
 jobs:
   build:
