@@ -28,11 +28,19 @@ runs:
     - name: Install dependencies
       shell: bash
       run: pnpm install
+    - name: Get current time
+      id: time
+      shell: bash
+      run: echo "::set-output name=time::$(date +'%Y-%m-%dT%H:%M:%S')"
     - name: Nx Cache
       id: nx-cache
       uses: actions/cache@v3
+      # The key is unique per execution to ensure we always cache the output.
+      # The restore keys then use the latest cache from: previous workflow run > previous workflow run on the same branch > most recent run for repo.
       with:
         path: node_modules/.cache/nx
-        key: ${{ runner.os }}-nx-store-${{ github.run_id }}
+        key: ${{ runner.os }}-nx-store-${{ github.ref_name }}-${{ github.run_id }}-${{ steps.time.outputs.time }}
         restore-keys: |
+          ${{ runner.os }}-nx-store-${{ github.ref_name }}-${{ github.run_id }}-
+          ${{ runner.os }}-nx-store-${{ github.ref_name }}-
           ${{ runner.os }}-nx-store-
