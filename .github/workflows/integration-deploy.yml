@@ -10,7 +10,7 @@ env:
   CI: true
 
 concurrency:
-  group: int-${{ github.ref }}
+  group: integration
 
 jobs:
   deploy:

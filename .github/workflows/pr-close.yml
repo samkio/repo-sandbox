@@ -11,7 +11,7 @@ env:
   GITHUB_PR_NUMBER: ${{ github.event.number }}
 
 concurrency:
-  group: pr-${{ github.ref }}
+  group: pr-${{ github.event.number }}
 
 jobs:
   destroy:
