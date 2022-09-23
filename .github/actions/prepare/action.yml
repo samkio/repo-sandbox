@@ -28,3 +28,11 @@ runs:
     - name: Install dependencies
       shell: bash
       run: pnpm install
+    - name: Nx Cache
+      id: nx-cache
+      uses: actions/cache@v3
+      with:
+        path: node_modules/.cache/nx
+        key: ${{ runner.os }}-nx-store-${{ github.run_id }}
+        restore-keys: |
+          ${{ runner.os }}-nx-store-
