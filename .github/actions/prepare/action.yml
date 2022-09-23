@@ -25,6 +25,8 @@ runs:
         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
+    - name: Setup Nx shas
+      uses: nrwl/nx-set-shas@v3
     - name: Install dependencies
       shell: bash
       run: pnpm install

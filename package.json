@@ -4,7 +4,9 @@
   "description": "Playground for testing repo, GitHub actions and AWS CI/CD features.",
   "private": true,
   "scripts": {
-    "build": "nx build"
+    "build": "nx affected --target=build",
+    "test": "CI=true nx affected --target=test",
+    "deploy": "nx affected --target=deploy"
   },
   "repository": {
     "type": "git",

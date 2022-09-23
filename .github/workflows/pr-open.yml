@@ -33,6 +33,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Run prepare
         uses: ./.github/actions/prepare
       - name: Configure AWS Credentials
@@ -42,7 +44,8 @@ jobs:
           role-to-assume: ${{ secrets.DEV_DEPLOY_ROLE }}
           role-session-name: RepoSandboxClientSession
       - name: Run build
-        run: pnpm nx run-many --target=build
+        run: pnpm build
+      - name: Run test
+        run: pnpm test
       - name: Deploy Infrastructure
-        working-directory: apps/my-cool-app/infrastructure
-        run: pnpm run cdk deploy --require-approval never --outputs-file ./cdk-outputs.json
+        run: pnpm deploy
