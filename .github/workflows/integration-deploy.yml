@@ -20,8 +20,13 @@ jobs:
     permissions:
       id-token: write
       contents: read
+      actions: read
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Nx SHAs
+        uses: nrwl/nx-set-shas@v2
       - name: Run prepare
         uses: ./.github/actions/prepare
       - name: Configure AWS Credentials
@@ -31,7 +36,6 @@ jobs:
           role-to-assume: ${{ secrets.DEV_DEPLOY_ROLE }}
           role-session-name: RepoSandboxClientSession
       - name: Run build
-        run: pnpm nx run-many --target=build
+        run: pnpm run build
       - name: Deploy Infrastructure
-        working-directory: apps/my-cool-app/infrastructure
-        run: pnpm run cdk deploy --require-approval never --outputs-file ./cdk-outputs.json
+        run: pnpm run deploy

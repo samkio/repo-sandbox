@@ -17,6 +17,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@nrwl/react": "^14.7.11",
     "@types/testing-library__jest-dom": "^5.14.5",
     "shared": "workspace:1.0.0"
   },

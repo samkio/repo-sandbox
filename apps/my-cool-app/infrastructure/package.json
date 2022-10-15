@@ -9,7 +9,9 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "deploy": "cdk deploy --require-approval never --outputs-file ./cdk-outputs.json",
+    "destroy": "cdk destroy --require-approval never"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
