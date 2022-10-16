@@ -14,6 +14,31 @@ concurrency:
   group: pr-${{ github.event.number }}
 
 jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Nx SHAs
+        uses: nrwl/nx-set-shas@v2
+      - name: Run prepare
+        uses: ./.github/actions/prepare
+      - name: Run test
+        run: |
+          echo "TEST_RESULT_LOG<<EOF" >> $GITHUB_ENV
+          pnpm run test >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        id: test
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: test
+          message: |
+            Unit Test Log
+            ```
+            ${{ env.TEST_RESULT_LOG }}
+            ```
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -28,7 +53,7 @@ jobs:
       - name: Run build
         run: pnpm run build
   deploy:
-    needs: [build]
+    needs: [build, test]
     name: Deploy
     runs-on: ubuntu-latest
     environment: Development
@@ -52,7 +77,5 @@ jobs:
           role-session-name: RepoSandboxClientSession
       - name: Run build
         run: pnpm run build
-      - name: Run test
-        run: pnpm run test
       - name: Deploy Infrastructure
         run: pnpm run deploy
