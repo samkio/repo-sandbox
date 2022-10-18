@@ -2,6 +2,7 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { ExampleType } from "shared";
+import { dynamicConfigUrl } from "./config";
 
 function App() {
   // Very basic dependency to verify depenent local packages are built.
@@ -14,6 +15,10 @@ function App() {
     ...value,
     environmentVariable: process.env.REACT_APP_ENVIRONMENT_VARIABLE,
   });
+ 
+  fetch(dynamicConfigUrl)
+    .then((i) => i.json())
+    .then((i) => console.log(i));
 
   return (
     <div className="App">
