@@ -27,7 +27,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Nx SHAs
-        uses: nrwl/nx-set-shas@v2
+        run: |
+          echo "NX_BASE=${{ github.event.pull_request.base.sha }}" >> $GITHUB_ENV
+          echo "NX_HEAD=${{ github.sha }}" >> $GITHUB_ENV
       - name: Run prepare
         uses: ./.github/actions/prepare
       - name: Configure AWS Credentials
