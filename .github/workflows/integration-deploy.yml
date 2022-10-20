@@ -32,7 +32,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: eu-west-2
-          role-to-assume: ${{ secrets.DEV_DEPLOY_ROLE }}
+          role-to-assume: ${{ secrets.INT_DEPLOY_ROLE }}
           role-session-name: RepoSandboxClientSession
       - name: Run build
         run: pnpm run build

@@ -1,0 +1,72 @@
+Description: >
+  Template to create GitHub OIDC provider and associated roles for CDK deployment.
+  If you don't specify an OIDC provider this will create one for you.
+  If you don't specify a repository name it will just create the OIDC provider.
+Parameters:
+  GitHubOrg:
+    Description: GitHub org name or username
+    Type: String
+  RepositoryName:
+    Description: Optional repository name. If not provided only OIDC will be created.
+    Default: ""
+    Type: String
+  EnvironmentName:
+    Description: Optional GitHub environment name. If not provided allows all environments.
+    Default: ""
+    Type: String
+  OIDCProviderArn:
+    Description: Arn for the GitHub OIDC Provider.
+    Default: ""
+    Type: String
+Conditions:
+  CreateOIDCProvider: !Equals
+    - !Ref OIDCProviderArn
+    - ""
+  UseEnvironment: !Not [!Equals [!Ref EnvironmentName, ""]]
+  CreateRole: !Not [!Equals [!Ref RepositoryName, ""]]
+
+Resources:
+  Role:
+    Type: "AWS::IAM::Role"
+    Condition: CreateRole
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action: "sts:AssumeRoleWithWebIdentity"
+            Principal:
+              Federated: !If
+                - CreateOIDCProvider
+                - !Ref GithubOidc
+                - !Ref OIDCProviderArn
+            Condition:
+              StringLike:
+                "token.actions.githubusercontent.com:sub": !If
+                  - UseEnvironment
+                  - !Sub >-
+                    repo:${GitHubOrg}/${RepositoryName}:environment:${EnvironmentName}
+                  - !Sub "repo:${GitHubOrg}/${RepositoryName}:*"
+      Policies:
+        - PolicyName: CDKAssumeRole
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: sts:AssumeRole
+                Resource: !Sub arn:aws:iam::${AWS::AccountId}:role/cdk-*
+  GithubOidc:
+    Type: "AWS::IAM::OIDCProvider"
+    Condition: CreateOIDCProvider
+    Properties:
+      Url: "https://token.actions.githubusercontent.com"
+      ClientIdList:
+        - sts.amazonaws.com
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+Outputs:
+  Role:
+    Value: !GetAtt Role.Arn
+    Condition: CreateRole
+  GithubOidc:
+    Value: !GetAtt GithubOidc.Arn
+    Condition: CreateOIDCProvider
