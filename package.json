@@ -6,8 +6,10 @@
   "scripts": {
     "build": "nx affected --target=build",
     "test": "CI=true nx affected --target=test",
-    "deploy": "nx affected --target=deploy",
-    "destroy": "nx affected --target=destroy"
+    "deploy:dev": "nx affected --target=deploy:dev",
+    "deploy:int": "nx affected --target=deploy:int",
+    "deploy:prod": "nx affected --target=deploy:prod",
+    "destroy:dev": "nx affected --target=destroy:dev"
   },
   "repository": {
     "type": "git",

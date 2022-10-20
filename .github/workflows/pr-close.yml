@@ -6,10 +6,6 @@ on:
       - main
     types: [closed]
 
-env:
-  ENVIRONMENT_NAME: "Development"
-  GITHUB_PR_NUMBER: ${{ github.event.number }}
-
 concurrency:
   group: pr-${{ github.event.number }}
 
@@ -40,5 +36,5 @@ jobs:
           role-session-name: RepoSandboxClientSession
       - name: Run build
         run: pnpm run build
-      - name: Destroy Infrastructure
-        run: pnpm run destroy
+      - name: Destroy
+        run: pnpm run destroy:dev -- -c devSuffix=PR${{ github.event.number }}

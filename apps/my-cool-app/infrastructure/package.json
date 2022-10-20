@@ -10,8 +10,10 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy": "cdk deploy --require-approval never --outputs-file ./cdk-outputs.json",
-    "destroy": "cdk destroy --require-approval never"
+    "deploy:dev": "cdk deploy -c environmentName=Development --require-approval never --outputs-file ./cdk-outputs.json",
+    "deploy:int": "cdk deploy -c environmentName=Integration --require-approval never --outputs-file ./cdk-outputs.json",
+    "deploy:prod": "cdk deploy -c environmentName=Prod --require-approval never --outputs-file ./cdk-outputs.json",
+    "destroy:dev": "cdk destroy -c environmentName=Development --require-approval never"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
