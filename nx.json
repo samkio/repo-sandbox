@@ -4,7 +4,13 @@
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": ["build", "test", "deploy"]
+        "cacheableOperations": [
+          "build",
+          "test",
+          "deploy:dev",
+          "deploy:int",
+          "deploy:prod"
+        ]
       }
     }
   },
@@ -15,7 +21,13 @@
     "test": {
       "dependsOn": ["^test"]
     },
-    "deploy": {
+    "deploy:dev": {
+      "dependsOn": ["^build"]
+    },
+    "deploy:int": {
+      "dependsOn": ["^build"]
+    },
+    "deploy:prod": {
       "dependsOn": ["^build"]
     }
   },
