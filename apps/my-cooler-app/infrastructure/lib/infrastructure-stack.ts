@@ -88,7 +88,7 @@ export class InfrastructureStack extends cdk.Stack {
     });
     const frontendPackagePath = path.join(
       __dirname,
-      "../../frontend-react-2/build"
+      "../../frontend-react-3/build"
     );
     const mainSiteDeploy = new BucketDeployment(
       this,

@@ -31,7 +31,7 @@
     "aws-cdk-lib": "2.39.1",
     "constructs": "^10.0.0",
     "esbuild": "0",
-    "frontend-react-2": "0.1.0",
+    "frontend-react-3": "0.1.0",
     "fs-extra": "^10.1.0",
     "shared": "workspace:^1.0.0",
     "source-map-support": "^0.5.21"
