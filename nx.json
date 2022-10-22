@@ -19,7 +19,7 @@
       "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": ["^test"]
+      "dependsOn": ["^build"]
     },
     "deploy:dev": {
       "dependsOn": ["^build"]
