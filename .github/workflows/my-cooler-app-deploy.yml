@@ -1,0 +1,62 @@
+name: "My Cooler App Deployment"
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  CI: true
+
+jobs:
+  deploy-int:
+    name: Deploy Integration
+    runs-on: ubuntu-latest
+    environment: Integration
+    concurrency: my-cooler-app-int
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Nx SHAs
+        uses: nrwl/nx-set-shas@v2
+      - name: Run prepare
+        uses: ./.github/actions/prepare
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.INT_DEPLOY_ROLE }}
+          role-session-name: RepoSandboxClientSession
+      - name: Deploy Infrastructure
+        run: pnpm nx deploy:int infrastructure-2
+  deploy-prod:
+    needs: [deploy-int]
+    name: Deploy Prod
+    runs-on: ubuntu-latest
+    environment: Production
+    concurrency: my-cooler-app-prod
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Nx SHAs
+        uses: nrwl/nx-set-shas@v2
+      - name: Run prepare
+        uses: ./.github/actions/prepare
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.PROD_DEPLOY_ROLE }}
+          role-session-name: RepoSandboxClientSession
+      - name: Deploy Infrastructure
+        run: pnpm nx deploy:prod infrastructure-2
