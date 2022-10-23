@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/samkio/repo-sandbox#readme",
   "devDependencies": {
-    "nx": "14.7.0"
+    "nx": "15.0.1"
   }
 }
