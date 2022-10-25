@@ -6,7 +6,6 @@ import { ExampleType } from "shared";
 import { Asset } from "aws-cdk-lib/aws-s3-assets";
 import { DockerImage, Duration } from "aws-cdk-lib";
 import { copySync } from "fs-extra";
-import { execSync } from "child_process";
 import {
   BlockPublicAccess,
   Bucket,

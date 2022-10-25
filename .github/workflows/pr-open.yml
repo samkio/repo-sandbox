@@ -30,7 +30,7 @@ jobs:
           pnpm run test >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
         id: test
-      - uses: marocchino/sticky-pull-request-comment@v2
+      - uses: marocchino/sticky-pull-request-comment@v2.3.0
         with:
           header: test
           message: |
@@ -60,6 +60,8 @@ jobs:
       id-token: write
       contents: read
       actions: read
+      issues: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -78,3 +80,8 @@ jobs:
         run: pnpm run build
       - name: Deploy
         run: pnpm run deploy:dev -- -c devSuffix=PR${{ github.event.number }}
+      - uses: marocchino/sticky-pull-request-comment@v2.3.0
+        with:
+          header: pr-output
+          path: apps/*/*/cdk-outputs.json
+          ignore_empty: true
