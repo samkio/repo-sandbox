@@ -1,11 +1,8 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { App } from "@aws-cdk/aws-amplify-alpha";
 import * as path from "path";
 import { ExampleType } from "shared";
-import { Asset } from "aws-cdk-lib/aws-s3-assets";
-import { DockerImage, Duration } from "aws-cdk-lib";
-import { copySync } from "fs-extra";
+import { Duration, RemovalPolicy } from "aws-cdk-lib";
 import {
   BlockPublicAccess,
   Bucket,
@@ -32,6 +29,7 @@ console.log(value);
 
 interface InfrastructureStackProps extends cdk.StackProps {
   environmentName: string;
+  isEphemeral: boolean;
 }
 
 export class InfrastructureStack extends cdk.Stack {
@@ -47,8 +45,10 @@ export class InfrastructureStack extends cdk.Stack {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       accessControl: BucketAccessControl.PRIVATE,
       objectOwnership: ObjectOwnership.BUCKET_OWNER_ENFORCED,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
+      removalPolicy: props.isEphemeral
+        ? cdk.RemovalPolicy.DESTROY
+        : cdk.RemovalPolicy.RETAIN,
+      autoDeleteObjects: props.isEphemeral,
     });
 
     frontendS3Bucket.addToResourcePolicy(
@@ -85,6 +85,9 @@ export class InfrastructureStack extends cdk.Stack {
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
     });
+    if (props.isEphemeral)
+      distribution.applyRemovalPolicy(RemovalPolicy.DESTROY);
+
     const frontendPackagePath = path.join(
       __dirname,
       "../../frontend-react-2/build"

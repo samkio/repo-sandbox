@@ -28,4 +28,5 @@ if (environmentName === "Development") {
 
 new InfrastructureStack(app, `InfrastructureStack-${environmentName}`, {
   environmentName,
+  isEphemeral: true,
 });
