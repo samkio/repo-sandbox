@@ -6,6 +6,7 @@
   "scripts": {
     "build": "nx affected --target=build",
     "test": "CI=true nx affected --target=test",
+    "info": "nx affected --target=info",
     "deploy:dev": "nx affected --target=deploy:dev",
     "deploy:int": "nx affected --target=deploy:int",
     "deploy:prod": "nx affected --target=deploy:prod",
