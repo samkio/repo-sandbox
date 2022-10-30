@@ -28,4 +28,5 @@ if (environmentName === "Development") {
 
 new InfrastructureStack(app, `MyCoolerApp-${environmentName}`, {
   environmentName,
+  isEphemeral: true,
 });
