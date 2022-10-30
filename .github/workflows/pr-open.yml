@@ -80,8 +80,10 @@ jobs:
         run: pnpm run build
       - name: Deploy
         run: pnpm run deploy:dev -- -c devSuffix=PR${{ github.event.number }}
+      - name: PR Info
+        run: pnpm run info
       - uses: marocchino/sticky-pull-request-comment@v2.3.0
         with:
           header: pr-output
-          path: apps/*/*/cdk-outputs.json
+          path: apps/*/*/cdk-outputs.md
           ignore_empty: true
