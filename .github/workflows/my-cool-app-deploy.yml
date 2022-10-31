@@ -9,6 +9,31 @@ env:
   CI: true
 
 jobs:
+  deploy-dev-static:
+    name: Deploy Development Static Resources
+    runs-on: ubuntu-latest
+    environment: Development
+    concurrency: my-cool-app-dev-static
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Nx SHAs
+        uses: nrwl/nx-set-shas@v2
+      - name: Run prepare
+        uses: ./.github/actions/prepare
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.DEV_DEPLOY_ROLE }}
+          role-session-name: RepoSandboxClientSession
+      - name: Deploy Infrastructure
+        run: pnpm nx deploy:dev infrastructure -- -c devSuffix=static
   deploy-int:
     name: Deploy Integration
     runs-on: ubuntu-latest
