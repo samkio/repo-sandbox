@@ -16,12 +16,6 @@ export class DataStorage extends Construct {
   constructor(scope: Construct, id: string, props: DataStorageProps) {
     super(scope, id);
 
-    // TODO this can be written as a generic construct/util
-    // TODO can we just point it to the same base stack and for different scenarios it knows what to create/not-create?
-    // Name | isStatic | onlyStatic
-    // prod/int | y | n
-    // dev-static | y | y
-    // dev | n | n
     if (props.isEphemeral) {
       new Bucket(this, "dataStorageBucket", {
         bucketName: `my-cool-app-data-storage-${props.environmentName.toLocaleLowerCase()}`,
