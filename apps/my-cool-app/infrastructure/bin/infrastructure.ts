@@ -2,6 +2,7 @@
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
 import { InfrastructureStack } from "../lib/infrastructure-stack";
+import { DevelopmentStaticStack } from "../lib/development-static-stack";
 
 const app = new cdk.App();
 
@@ -26,7 +27,13 @@ if (environmentName === "Development") {
   }
 }
 
-new InfrastructureStack(app, `InfrastructureStack-${environmentName}`, {
-  environmentName,
-  isEphemeral: true,
-});
+if (devSuffix === "static") {
+  new DevelopmentStaticStack(app, `MyCoolApp-Development-static`, {
+    environmentName,
+  });
+} else {
+  new InfrastructureStack(app, `InfrastructureStack-${environmentName}`, {
+    environmentName,
+    isEphemeral: true,
+  });
+}

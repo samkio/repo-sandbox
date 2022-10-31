@@ -19,6 +19,7 @@ import {
 } from "aws-cdk-lib/aws-cloudfront";
 import { CanonicalUserPrincipal, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
+import { DataStorage } from "./constructs/data-storage";
 
 // Very basic dependency to verify depenent local packages are built.
 const value: ExampleType = {
@@ -35,6 +36,9 @@ interface InfrastructureStackProps extends cdk.StackProps {
 export class InfrastructureStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: InfrastructureStackProps) {
     super(scope, id, props);
+
+    // Shared Development Resources
+    new DataStorage(this, "dataStorage", props);
 
     // https://github.com/aws-samples/aws-cdk-examples/blob/master/typescript/static-site/static-site.ts
     const cloudfrontOAI = new OriginAccessIdentity(this, "cloudfront-OAI");
